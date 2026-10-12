@@ -4,6 +4,10 @@
 framework, no accounts, no server required. Works offline, installs to the home
 screen, and syncs between devices through a single access code when you want it to.
 
+A privacy-first, self-hosted alternative to Sunsama, TickTick, Todoist and Google
+Calendar for time blocking — the small end of that spectrum: no subscription, no
+tracking, and nothing leaves your device unless you turn sync on.
+
 **[Live demo →](https://planly.site)** · [Русская версия →](README.ru.md)
 
 ![Planly on iPhone: timeline, tasks and dark mode](docs/hero.png)
