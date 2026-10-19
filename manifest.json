@@ -1,7 +1,7 @@
 {
-  "name": "Planly",
-  "short_name": "Planly",
-  "description": "Минималистичный планировщик дня с временной шкалой",
+  "name": "Sashidy Planner",
+  "short_name": "Sashidy",
+  "description": "Agenda personal para organizar actividades, tareas y compromisos.",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
@@ -9,11 +9,24 @@
   "orientation": "portrait",
   "background_color": "#f2f2f7",
   "theme_color": "#17a05e",
-  "lang": "ru",
+  "lang": "es",
   "categories": ["productivity"],
   "icons": [
-    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
-    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
