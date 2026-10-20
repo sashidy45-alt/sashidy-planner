@@ -517,7 +517,48 @@ var WD=(function(){
   }
   return out;
 })();
-var KEEP_DAYS=14;
+
+/* Textos de Sashidy Planner para respaldo completo e historial permanente. */
+var SP_MESSAGES={
+  es:{
+    archive:'Las actividades realizadas se conservan hasta que las elimines.',
+    backup:'Incluye tareas, carpetas, notas, repeticiones y ajustes.',
+    restore:'¿Restaurar esta copia? Se reemplazarán las tareas y los demás datos incluidos. Los datos que la copia no contenga se conservarán.',
+    storage:'No se pudo guardar la copia. Tus datos actuales se mantienen.'
+  },
+  en:{
+    archive:'Completed tasks are kept until you delete them.',
+    backup:'Includes tasks, folders, notes, recurring schedules and settings.',
+    restore:'Restore this backup? Tasks and other included data will be replaced. Data not included in the backup will be kept.',
+    storage:'The backup could not be saved. Your current data is unchanged.'
+  },
+  ru:{
+    archive:'Выполненные дела хранятся, пока вы их не удалите.',
+    backup:'Включает дела, папки, заметки, повторения и настройки.',
+    restore:'Восстановить копию? Дела и другие включённые данные будут заменены. Данные, которых нет в копии, сохранятся.',
+    storage:'Не удалось сохранить копию. Текущие данные не изменены.'
+  },
+  de:{
+    archive:'Erledigte Aufgaben bleiben gespeichert, bis du sie löschst.',
+    backup:'Enthält Aufgaben, Ordner, Notizen, Wiederholungen und Einstellungen.',
+    restore:'Sicherung wiederherstellen? Aufgaben und andere enthaltene Daten werden ersetzt. Nicht enthaltene Daten bleiben erhalten.',
+    storage:'Die Sicherung konnte nicht gespeichert werden. Deine aktuellen Daten bleiben unverändert.'
+  },
+  zh:{
+    archive:'已完成的任务会一直保留，直到你将其删除。',
+    backup:'包含任务、文件夹、笔记、重复计划和设置。',
+    restore:'恢复此备份？任务及备份中包含的其他数据将被替换。备份中未包含的数据将保留。',
+    storage:'无法保存备份。当前数据未更改。'
+  },
+  hi:{
+    archive:'पूरे किए गए काम आपके हटाने तक सुरक्षित रहेंगे।',
+    backup:'इसमें काम, फ़ोल्डर, नोट्स, दोहराव और सेटिंग्स शामिल हैं।',
+    restore:'यह बैकअप बहाल करें? इसमें मौजूद काम और अन्य डेटा बदले जाएँगे। जो डेटा बैकअप में नहीं है, वह बना रहेगा।',
+    storage:'बैकअप सहेजा नहीं जा सका। आपका मौजूदा डेटा नहीं बदला है।'
+  }
+};
+function spMessage(key){return (SP_MESSAGES[LANG]||SP_MESSAGES.en)[key];}
+
 var BUILD='__BUILD__'; if(BUILD.charAt(0)==='_') BUILD='dev';
 function isApp(){return !!(window.navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches));}
 var PRI=[{n:tr('Низкий'),c:'var(--gray)'},{n:tr('Средний'),c:'var(--accent)'},
@@ -662,12 +703,6 @@ function inFolder(t,sel){return sel==='all'?true:(sel==='none'?!t.folder:t.folde
 function backlogIn(sel){return backlogList().filter(function(t){return inFolder(t,sel);});}
 function archiveList(){return S.tasks.filter(function(t){return t.done;}).sort(function(a,b){return (b.doneAt||0)-(a.doneAt||0);});}
 function setDone(t,v){ t.done=!!v; t.doneAt=v?Date.now():null; }
-function purgeArchive(){
-  var edge=Date.now()-KEEP_DAYS*864e5, before=S.tasks.length;
-  S.tasks=S.tasks.filter(function(t){return !(t.done&&(t.doneAt||0)<edge);});
-  if(S.tasks.length!==before) save();
-  return before-S.tasks.length;
-}
 function byId(id){for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].id===id)return S.tasks[i];return null;}
 function conflicts(date,start,dur,skip){
   return onDay(date).filter(function(t){return t.id!==skip && start < t.start+t.dur && t.start < start+dur;});
@@ -1167,7 +1202,7 @@ function itemHTML(t){
 function renderArchive(){
   var box=$('#archive'), list=archiveList();
   if(!list.length){
-    box.innerHTML='<div class="blank"><div class="gl"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>'+tr('Здесь окажутся выполненные дела.')+'<br>'+tr('Записи старше двух недель удаляются сами.')+'</div>';
+    box.innerHTML='<div class="blank"><div class="gl"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>'+tr('Здесь окажутся выполненные дела.')+'<br>'+spMessage('archive')+'</div>';
     return;
   }
   var html='', cur='', i;
@@ -1180,7 +1215,7 @@ function renderArchive(){
     html+=archHTML(t);
   }
   html+='</div></div>';
-  html+='<div class="arch-note">'+tr('Записи старше {n} дней удаляются автоматически',{n:KEEP_DAYS})+'</div>';
+  html+='<div class="arch-note">'+spMessage('archive')+'</div>';
   html+='<div style="padding:10px 0 4px"><button class="danger" id="aWipe">'+tr('Очистить архив')+'</button></div>';
   box.innerHTML=html;
   $$('.item',box).forEach(function(el){
@@ -2119,6 +2154,81 @@ function openEditor(task,pre){
   if(isNew) setTimeout(function(){tEl.focus();},260);
 }
 
+
+/* ---------- respaldo completo ---------- */
+function makeBackup(){
+  flushNote();
+  return JSON.stringify(Object.assign({
+    format:'sashidy-planner-backup',
+    version:1,
+    exportedAt:new Date().toISOString()
+  },localDoc()));
+}
+function prepareBackupRestore(txt){
+  var d=JSON.parse(txt,function(key,value){
+    if(key==='__proto__'||key==='constructor'||key==='prototype') throw new Error('Invalid backup key');
+    return value;
+  });
+  function object(x){return !!x&&typeof x==='object'&&!Array.isArray(x);}
+  function has(key){return Object.prototype.hasOwnProperty.call(d,key);}
+  function checkRecords(list){
+    if(!Array.isArray(list)) throw new Error('Invalid backup list');
+    var ids=Object.create(null);
+    list.forEach(function(x){
+      if(!object(x)||typeof x.id!=='string'||!x.id||/[<>"'\x00-\x1f]/.test(x.id)||ids[x.id]) throw new Error('Invalid backup record');
+      ids[x.id]=true;
+      ['title','note','date','folder','seriesId','name','body','from','kind'].forEach(function(k){
+        if(x[k]!=null&&typeof x[k]!=='string') throw new Error('Invalid backup text');
+      });
+      ['start','dur','pri','doneAt','upd','ord','ruleUpd'].forEach(function(k){
+        if(x[k]!=null&&(typeof x[k]!=='number'||!Number.isFinite(x[k]))) throw new Error('Invalid backup number');
+      });
+      if(x.done!=null&&typeof x.done!=='boolean') throw new Error('Invalid completion value');
+      if(x.days!=null&&(!Array.isArray(x.days)||x.days.some(function(day){return !Number.isInteger(day)||day<0||day>6;}))) throw new Error('Invalid repeat days');
+      if(x.skip!=null&&!object(x.skip)) throw new Error('Invalid skipped dates');
+    });
+  }
+  if(!object(d)||!Array.isArray(d.tasks)) throw new Error('Invalid backup');
+  if(has('format')){
+    if(d.format!=='sashidy-planner-backup'||d.version!==1) throw new Error('Unsupported backup format');
+    ['folders','notes','series','settings','del'].forEach(function(k){
+      if(!has(k)) throw new Error('Incomplete backup');
+    });
+  }
+  ['tasks','folders','notes','series'].forEach(function(k){if(has(k)) checkRecords(d[k]);});
+  if(has('settings')&&!object(d.settings)) throw new Error('Invalid settings');
+  if(has('del')&&!object(d.del)) throw new Error('Invalid deletions');
+  if(d.del) Object.keys(d.del).forEach(function(id){
+    if(typeof d.del[id]!=='number'||!Number.isFinite(d.del[id])) throw new Error('Invalid deletion date');
+  });
+  var next={
+    tasks:d.tasks.map(normalize),
+    folders:(has('folders')?d.folders:S.folders).map(function(f,i){
+      if(typeof f.name!=='string'||!f.name.trim()) throw new Error('Invalid folder');
+      return Object.assign({},f,{ord:typeof f.ord==='number'?f.ord:i});
+    }),
+    notes:(has('notes')?d.notes:S.notes).map(normalizeNote),
+    series:(has('series')?d.series:S.series).map(normalizeSeries),
+    settings:Object.assign({},DEF,has('settings')?d.settings:S.settings),
+    del:Object.assign({},S.del,d.del||{}),
+    settingsUpd:Date.now()
+  };
+  // La restauración es una edición nueva, también para una sincronización posterior.
+  var now=next.settingsUpd;
+  ['tasks','folders','notes','series'].forEach(function(k){
+    var present=Object.create(null);
+    next[k].forEach(function(x){present[x.id]=true;x.upd=now;delete next.del[x.id];});
+    S[k].forEach(function(x){if(!present[x.id]) next.del[x.id]=now;});
+  });
+  return next;
+}
+function commitBackupRestore(next){
+  // Persistir primero: si el almacenamiento falla, no cambiar el estado actual.
+  localStorage.setItem(KEY,JSON.stringify(next));
+  Object.keys(next).forEach(function(k){S[k]=next[k];});
+  buildShadow();
+}
+
 /* ---------- settings ---------- */
 function openSettings(){
   var st=S.settings;
@@ -2151,6 +2261,7 @@ function openSettings(){
       '<div class="card"><div class="row"><span class="lbl">'+tr('Разгрузить дела за период')+'</span>'+
         '<button class="tb r" id="sUnload">'+tr('Открыть')+'</button></div></div>'+
       '<div class="hint">'+tr('Резервная копия')+'</div>'+
+      '<div class="hint">'+spMessage('backup')+'</div>'+
       '<div class="card">'+
         '<div class="row"><span class="lbl">'+tr('Скопировать резервную копию')+'</span><button class="tb r" id="sExp">'+tr('Копировать')+'</button></div>'+
         '<div class="row"><span class="lbl">'+tr('Вставить из буфера')+'</span><button class="tb r" id="sImp">'+tr('Вставить')+'</button></div>'+
@@ -2193,7 +2304,7 @@ function openSettings(){
   });});
   $('#sUnload',sh).addEventListener('click',function(){ closeSheet(); openUnload(); });
   $('#sExp',sh).addEventListener('click',function(){
-    var txt=JSON.stringify({tasks:S.tasks,settings:S.settings});
+    var txt=makeBackup();
     if(navigator.clipboard&&navigator.clipboard.writeText)
       navigator.clipboard.writeText(txt).then(function(){toast(tr('Копия в буфере обмена'));},function(){toast(tr('Не удалось скопировать'));});
     else toast(tr('Не удалось скопировать'));
@@ -2201,13 +2312,14 @@ function openSettings(){
   $('#sImp',sh).addEventListener('click',function(){
     if(!(navigator.clipboard&&navigator.clipboard.readText)){toast(tr('Браузер не даёт читать буфер'));return;}
     navigator.clipboard.readText().then(function(txt){
-      try{
-        var d=JSON.parse(txt);
-        if(!d||!Array.isArray(d.tasks))throw 0;
-        snapshot(); S.tasks=d.tasks.map(normalize);
-        if(d.settings)S.settings=Object.assign({},DEF,d.settings);
-        save();applyTheme();render();closeSheet();toast(tr('Данные восстановлены'),true);
-      }catch(e){toast(tr('В буфере не копия Planly'));}
+      var next;
+      try{ next=prepareBackupRestore(txt); }
+      catch(e){toast(tr('В буфере не копия Planly'));return;}
+      if(!confirm(spMessage('restore'))) return;
+      try{ commitBackupRestore(next); }
+      catch(e){toast(spMessage('storage'));return;}
+      // Recargar aplica también el idioma y las reglas de repetición restauradas.
+      location.reload();
     },function(){toast(tr('Нет доступа к буферу'));});
   });
   $('#sWipe',sh).addEventListener('click',function(){
@@ -2554,7 +2666,7 @@ setInterval(function(){
 },30000);
 window.addEventListener('focus',function(){
   if(sync.code) scheduleSync();
-  if(purgeArchive()|ensureOccurrences()) render();
+  if(ensureOccurrences()) render();
   else if(S.view==='day'&&S.settings.mode==='scale') renderTimeline();
 });
 
@@ -2600,7 +2712,6 @@ translateStatic();
 load();
 buildShadow();
 loadSync();
-purgeArchive();
 ensureOccurrences();
 S.date=todayISO();
 applyTheme();
@@ -2624,3 +2735,4 @@ window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').addEventLis
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
 })();
 </script>
+
