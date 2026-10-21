@@ -48,6 +48,11 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  const url = new URL(e.request.url);
+  // Sync must always reach the server. Never store codes/documents in the
+  // service-worker cache or report a cached response as a successful sync.
+  if (url.origin !== self.location.origin || /\/api(?:\/|$)/.test(url.pathname)) return;
+  if (e.request.cache === 'no-store') return;
   e.respondWith(
     fetch(e.request)
       .then(res => {
