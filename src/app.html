@@ -647,17 +647,17 @@ var SP_MESSAGES={
   }
 };
 var SP_TASK_MESSAGES={
-  es:{status:'Estado',review:'Revisado',progress:'En curso',done:'Realizado',subtasks:'Subtareas',addSubtask:'Añadir subtarea',emptySubtasks:'Todavía no hay subtareas.',removeSubtask:'Eliminar subtarea',subtaskTitle:'Título de la subtarea',save:'Guardar'},
-  en:{status:'Status',review:'Reviewed',progress:'In progress',done:'Completed',subtasks:'Subtasks',addSubtask:'Add subtask',emptySubtasks:'No subtasks yet.',removeSubtask:'Delete subtask',subtaskTitle:'Subtask title',save:'Save'},
-  ru:{status:'Состояние',review:'Проверено',progress:'В работе',done:'Выполнено',subtasks:'Подзадачи',addSubtask:'Добавить подзадачу',emptySubtasks:'Нет подзадач.',removeSubtask:'Удалить подзадачу',subtaskTitle:'Название подзадачи',save:'Сохранить'},
-  de:{status:'Status',review:'Geprüft',progress:'In Arbeit',done:'Erledigt',subtasks:'Teilaufgaben',addSubtask:'Teilaufgabe hinzufügen',emptySubtasks:'Noch keine Teilaufgaben.',removeSubtask:'Teilaufgabe löschen',subtaskTitle:'Titel der Teilaufgabe',save:'Speichern'},
-  zh:{status:'状态',review:'已检查',progress:'进行中',done:'已完成',subtasks:'子任务',addSubtask:'添加子任务',emptySubtasks:'还没有子任务。',removeSubtask:'删除子任务',subtaskTitle:'子任务标题',save:'保存'},
-  hi:{status:'स्थिति',review:'समीक्षित',progress:'जारी',done:'पूरा हुआ',subtasks:'उपकार्य',addSubtask:'उपकार्य जोड़ें',emptySubtasks:'अभी कोई उपकार्य नहीं है।',removeSubtask:'उपकार्य हटाएँ',subtaskTitle:'उपकार्य का शीर्षक',save:'सहेजें'}
+  es:{status:'Estado',review:'Revisado',progress:'En curso',done:'Realizado',subtasks:'Subtareas',addSubtask:'Añadir subtarea',emptySubtasks:'Todavía no hay subtareas.',removeSubtask:'Eliminar subtarea',subtaskTitle:'Título de la subtarea',deadline:'Fecha límite',deadlineHint:'Último día para completar, independiente de la fecha programada.',deadlinePassed:'Vencida',deadlineInvalid:'Selecciona una fecha límite válida.',save:'Guardar'},
+  en:{status:'Status',review:'Reviewed',progress:'In progress',done:'Completed',subtasks:'Subtasks',addSubtask:'Add subtask',emptySubtasks:'No subtasks yet.',removeSubtask:'Delete subtask',subtaskTitle:'Subtask title',deadline:'Deadline',deadlineHint:'Last day to complete, separate from the scheduled date.',deadlinePassed:'Overdue',deadlineInvalid:'Choose a valid deadline.',save:'Save'},
+  ru:{status:'Состояние',review:'Проверено',progress:'В работе',done:'Выполнено',subtasks:'Подзадачи',addSubtask:'Добавить подзадачу',emptySubtasks:'Нет подзадач.',removeSubtask:'Удалить подзадачу',subtaskTitle:'Название подзадачи',deadline:'Срок выполнения',deadlinePassed:'Просрочено',deadlineInvalid:'Выберите корректный срок.',save:'Сохранить'},
+  de:{status:'Status',review:'Geprüft',progress:'In Arbeit',done:'Erledigt',subtasks:'Teilaufgaben',addSubtask:'Teilaufgabe hinzufügen',emptySubtasks:'Noch keine Teilaufgaben.',removeSubtask:'Teilaufgabe löschen',subtaskTitle:'Titel der Teilaufgabe',deadline:'Frist',deadlineHint:'Letzter Tag zur Erledigung, unabhängig vom geplanten Datum.',deadlinePassed:'Überfällig',deadlineInvalid:'Wähle eine gültige Frist.',save:'Speichern'},
+  zh:{status:'状态',review:'已检查',progress:'进行中',done:'已完成',subtasks:'子任务',addSubtask:'添加子任务',emptySubtasks:'还没有子任务。',removeSubtask:'删除子任务',subtaskTitle:'子任务标题',deadline:'截止日期',deadlineHint:'完成任务的最后一天，与计划日期分开。',deadlinePassed:'已逾期',deadlineInvalid:'请选择有效的截止日期。',save:'保存'},
+  hi:{status:'स्थिति',review:'समीक्षित',progress:'जारी',done:'पूरा हुआ',subtasks:'उपकार्य',addSubtask:'उपकार्य जोड़ें',emptySubtasks:'अभी कोई उपकार्य नहीं है।',removeSubtask:'उपकार्य हटाएँ',subtaskTitle:'उपकार्य का शीर्षक',deadline:'अंतिम तिथि',deadlineHint:'पूरा करने का आख़िरी दिन; नियोजित तारीख़ से अलग।',deadlinePassed:'समय सीमा पार',deadlineInvalid:'सही अंतिम तिथि चुनें।',save:'सहेजें'}
 };
 Object.keys(SP_TASK_MESSAGES).forEach(function(lang){Object.assign(SP_MESSAGES[lang],SP_TASK_MESSAGES[lang]);});
 var SP_PLANNER_MESSAGES={
-  es:{home:'Inicio',week:'Semana',month:'Mes',activities:'Actividades',history:'Historial',monthHint:'Selecciona un día para ver sus actividades.',search:'Buscar por título, categoría o nota',pending:'Pendientes',allStates:'Todos los estados',allTypes:'Todos los tipos',task:'Tarea',appointment:'Compromiso',type:'Tipo',area:'Área',category:'Categoría',categoryHint:'Ej.: Tesis, clases, reuniones',noDate:'Sin fecha',noTime:'Sin hora',noDuration:'Sin duración indicada',setDuration:'Indicar duración',monthly:'Cada mes',monthlyHint:'Se repite el mismo día del mes; en meses cortos, el último día disponible.',overdue:'De días anteriores',undated:'Sin fecha',todayPending:'Pendientes de hoy',weekDone:'Realizadas esta semana',newActivity:'Nueva actividad',welcome:'Tu día, a tu ritmo.',welcomeHint:'Organiza tus actividades y avanza un paso a la vez.',todayAgenda:'Agenda de hoy',viewAll:'Ver todas',emptyDay:'No hay actividades para este día.',emptyResults:'No hay actividades con estos filtros.',olderPending:'Pendientes de días anteriores',upcoming:'Próximas actividades',countActivities:'actividades',weekProgress:'Progreso de la semana',completedOf:'realizadas de',openDay:'Abrir día',add:'Añadir',more:'más',extraDay:'Sin hora o fuera del horario de la vista',dateRequired:'Selecciona una fecha válida.',timeRequired:'Indica una hora o activa «Sin hora».',endAfterDay:'La actividad termina después de medianoche. Reduce la duración o cambia la hora.',saved:'Actividad guardada',noTitle:'Escribe un nombre para la actividad.',savedLocal:'Los cambios se guardan en este dispositivo.',repeatDay:'Día del mes',noCategory:'Sin categoría',clearFilters:'Limpiar filtros',noDateHint:'Puedes asignar fecha y hora cuando lo necesites.',periodTotal:'actividades programadas',storageFailed:'No se pudo guardar. Copia un respaldo antes de cerrar la agenda.'},
-  en:{home:'Home',week:'Week',month:'Month',activities:'Activities',history:'History',monthHint:'Select a day to see its activities.',search:'Search title, category or note',pending:'Pending',allStates:'All statuses',allTypes:'All types',task:'Task',appointment:'Appointment',type:'Type',area:'Area',category:'Category',categoryHint:'E.g. Thesis, classes, meetings',noDate:'No date',noTime:'No time',noDuration:'Duration not set',setDuration:'Set duration',monthly:'Monthly',monthlyHint:'Repeats on the same day each month; shorter months use their last day.',overdue:'From earlier days',undated:'No date',todayPending:'Pending today',weekDone:'Completed this week',newActivity:'New activity',welcome:'Your day, at your pace.',welcomeHint:'Organize your activities and take one step at a time.',todayAgenda:'Today’s agenda',viewAll:'View all',emptyDay:'No activities for this day.',emptyResults:'No activities match these filters.',olderPending:'Pending from earlier days',upcoming:'Coming up',countActivities:'activities',weekProgress:'This week’s progress',completedOf:'completed of',openDay:'Open day',add:'Add',more:'more',extraDay:'No time or outside the visible hours',dateRequired:'Choose a valid date.',timeRequired:'Enter a time or select “No time”.',endAfterDay:'This activity ends after midnight. Shorten it or change the start time.',saved:'Activity saved',noTitle:'Enter an activity name.',savedLocal:'Changes are saved on this device.',repeatDay:'Day of month',noCategory:'No category',clearFilters:'Clear filters',noDateHint:'You can add a date and time later.',periodTotal:'scheduled activities',storageFailed:'Could not save. Copy a backup before closing the planner.'}
+  es:{home:'Inicio',week:'Semana',month:'Mes',activities:'Actividades',history:'Historial',monthHint:'Selecciona un día para ver sus actividades.',search:'Buscar por título, categoría o nota',pending:'Pendientes',allStates:'Todos los estados',allTypes:'Todos los tipos',task:'Tarea',appointment:'Compromiso',type:'Tipo',area:'Área',category:'Categoría',categoryHint:'Ej.: Tesis, clases, reuniones',noDate:'Sin fecha',noTime:'Sin hora',noDuration:'Sin duración indicada',setDuration:'Indicar duración',monthly:'Cada mes',monthlyHint:'Se repite el mismo día del mes; en meses cortos, el último día disponible.',overdue:'Atrasadas',undated:'Sin fecha',todayPending:'Pendientes de hoy',weekDone:'Realizadas esta semana',newActivity:'Nueva actividad',welcome:'Tu día, a tu ritmo.',welcomeHint:'Organiza tus actividades y avanza un paso a la vez.',todayAgenda:'Agenda de hoy',viewAll:'Ver todas',emptyDay:'No hay actividades para este día.',emptyResults:'No hay actividades con estos filtros.',olderPending:'Pendientes atrasadas',upcoming:'Próximas actividades',countActivities:'actividades',weekProgress:'Progreso de la semana',completedOf:'realizadas de',openDay:'Abrir día',add:'Añadir',more:'más',extraDay:'Sin hora o fuera del horario de la vista',dateRequired:'Selecciona una fecha válida.',timeRequired:'Indica una hora o activa «Sin hora».',endAfterDay:'La actividad termina después de medianoche. Reduce la duración o cambia la hora.',saved:'Actividad guardada',noTitle:'Escribe un nombre para la actividad.',savedLocal:'Los cambios se guardan en este dispositivo.',repeatDay:'Día del mes',noCategory:'Sin categoría',clearFilters:'Limpiar filtros',noDateHint:'Puedes asignar fecha y hora cuando lo necesites.',periodTotal:'actividades programadas',storageFailed:'No se pudo guardar. Copia un respaldo antes de cerrar la agenda.'},
+  en:{home:'Home',week:'Week',month:'Month',activities:'Activities',history:'History',monthHint:'Select a day to see its activities.',search:'Search title, category or note',pending:'Pending',allStates:'All statuses',allTypes:'All types',task:'Task',appointment:'Appointment',type:'Type',area:'Area',category:'Category',categoryHint:'E.g. Thesis, classes, meetings',noDate:'No date',noTime:'No time',noDuration:'Duration not set',setDuration:'Set duration',monthly:'Monthly',monthlyHint:'Repeats on the same day each month; shorter months use their last day.',overdue:'Overdue',undated:'No date',todayPending:'Pending today',weekDone:'Completed this week',newActivity:'New activity',welcome:'Your day, at your pace.',welcomeHint:'Organize your activities and take one step at a time.',todayAgenda:'Today’s agenda',viewAll:'View all',emptyDay:'No activities for this day.',emptyResults:'No activities match these filters.',olderPending:'Overdue tasks',upcoming:'Coming up',countActivities:'activities',weekProgress:'This week’s progress',completedOf:'completed of',openDay:'Open day',add:'Add',more:'more',extraDay:'No time or outside the visible hours',dateRequired:'Choose a valid date.',timeRequired:'Enter a time or select “No time”.',endAfterDay:'This activity ends after midnight. Shorten it or change the start time.',saved:'Activity saved',noTitle:'Enter an activity name.',savedLocal:'Changes are saved on this device.',repeatDay:'Day of month',noCategory:'No category',clearFilters:'Clear filters',noDateHint:'You can add a date and time later.',periodTotal:'scheduled activities',storageFailed:'Could not save. Copy a backup before closing the planner.'}
 };
 Object.keys(SP_PLANNER_MESSAGES).forEach(function(lang){Object.assign(SP_MESSAGES[lang],SP_PLANNER_MESSAGES[lang]);});
 Object.assign(SP_MESSAGES.es,{activityOne:'actividad',periodOne:'actividad programada'});
@@ -743,6 +743,7 @@ function normalizeSeries(x){
   return {id:x.id||uid(),title:x.title||'',note:x.note||'',start:x.start===null?null:((typeof x.start==='number')?x.start:9*60),
     dur:x.dur||60,pri:(typeof x.pri==='number')?x.pri:1,folder:x.folder||null,
     type:x.type==='appointment'?'appointment':'task',category:typeof x.category==='string'?x.category:'',durationSet:x.durationSet!==false,
+    deadlineOffset:Number.isInteger(x.deadlineOffset)?Math.max(-36500,Math.min(36500,x.deadlineOffset)):null,
     kind:x.kind==='month'?'month':(x.kind==='week'?'week':'daily'),days:Array.isArray(x.days)?x.days.slice():[],
     monthDay:Number.isInteger(x.monthDay)?Math.max(1,Math.min(31,x.monthDay)):fromISO(x.from||todayISO()).getDate(),
     from:x.from||todayISO(),skip:x.skip||{},subtasks:normalizeSubtasks(x.subtasks,true),ruleUpd:x.ruleUpd||0,upd:x.upd||0};
@@ -754,7 +755,7 @@ function normalize(t){
   var status=(t.status==='progress'||t.status==='done'||t.status==='review')?t.status:(t.done?'done':'review');
   var subs=normalizeSubtasks(t.subtasks);
   if(t.done) status='done';
-  return {id:t.id||uid(),title:t.title||'',note:t.note||'',date:t.date||null,
+  return {id:t.id||uid(),title:t.title||'',note:t.note||'',date:t.date||null,deadline:validDate(t.deadline)?t.deadline:null,
     start:(typeof t.start==='number')?t.start:null,dur:t.dur||S.settings.dur||60,
     pri:Math.max(0,Math.min(URGENT,(typeof t.pri==='number')?t.pri:1)),done:status==='done',status:status,
     doneAt:status==='done'?(t.doneAt||Date.now()):null,folder:t.folder||null,upd:t.upd||0,seriesId:t.seriesId||null,
@@ -909,9 +910,14 @@ function repLabel(sr){
   return d.map(function(i){return WD[i];}).join(', ');
 }
 function instanceFor(sr,iso){
-  return normalize({id:sr.id+'@'+iso,title:sr.title,note:sr.note,date:iso,start:sr.start,dur:sr.dur,
+  return normalize({id:sr.id+'@'+iso,title:sr.title,note:sr.note,date:iso,deadline:Number.isInteger(sr.deadlineOffset)?addDays(iso,sr.deadlineOffset):null,start:sr.start,dur:sr.dur,
     type:sr.type,category:sr.category,durationSet:sr.durationSet,
     pri:sr.pri,folder:sr.folder,subtasks:normalizeSubtasks(sr.subtasks,true),seriesId:sr.id});
+}
+function dateOffset(from,to){
+  if(!validDate(from)||!validDate(to)) return null;
+  var a=from.split('-').map(Number),b=to.split('-').map(Number);
+  return Math.round((Date.UTC(b[0],b[1]-1,b[2])-Date.UTC(a[0],a[1]-1,a[2]))/86400000);
 }
 /* создаёт недостающие экземпляры серий в окне [вчера … +35 дней] (или до указанной даты) */
 function ensureOccurrences(untilIso){
@@ -944,6 +950,7 @@ function regenSeries(sr,fromIso,updateSubtasks){
     if(!seriesMatches(sr,t.date)||(sr.skip&&sr.skip[t.date])) return false;   // больше не по правилу — убрать
     t.title=sr.title; t.note=sr.note; t.start=sr.start; t.dur=sr.dur; t.pri=sr.pri; t.folder=sr.folder;
     t.type=sr.type; t.category=sr.category; t.durationSet=sr.durationSet;
+    t.deadline=Number.isInteger(sr.deadlineOffset)?addDays(t.date,sr.deadlineOffset):null;
     if(updateSubtasks){
       var previous=Object.create(null);
       (t.subtasks||[]).forEach(function(x){previous[x.id]=!!x.done;});
@@ -999,7 +1006,7 @@ function filteredActivities(ignoreFolder){
     if(!ignoreFolder&&!inFolder(t,S.folderSel))return false;
     if(activityFilter.type!=='all'&&t.type!==activityFilter.type)return false;
     if(status==='pending'&&t.done)return false;
-    if(status==='overdue'&&(t.done||!t.date||t.date>=today))return false;
+    if(status==='overdue'&&(t.done||!((t.deadline&&t.deadline<today)||(t.date&&t.date<today))))return false;
     if(status==='undated'&&(t.done||t.date))return false;
     if(['review','progress','done'].indexOf(status)>=0&&t.status!==status)return false;
     return !text||[t.title,t.note,t.category,folderName(t.folder)].join(' ').toLocaleLowerCase().indexOf(text)>=0;
@@ -1013,6 +1020,7 @@ function activityCardHTML(t,showDate){
   var meta=[spMessage(t.type==='appointment'?'appointment':'task')];
   if(showDate)meta.push(t.date?fmtDayShort(t.date):spMessage('noDate'));
   if(t.date)meta.push(taskTimeLabel(t));
+  if(t.deadline)meta.push((!t.done&&t.deadline<todayISO()?spMessage('deadlinePassed'):spMessage('deadline'))+': '+fmtDayShort(t.deadline));
   if(!isSched(t)&&t.durationSet!==false)meta.push(durationLabel(t));
   meta.push(PRI[t.pri].n);
   if(t.folder)meta.push(folderName(t.folder));
@@ -1026,7 +1034,7 @@ function activityCardHTML(t,showDate){
 }
 function activityStack(list,showDate,empty){return list.length?'<div class="activity-stack">'+list.map(function(t){return activityCardHTML(t,showDate);}).join('')+'</div>':'<div class="empty-small">'+esc(empty||spMessage('emptyDay'))+'</div>';}
 function renderHome(){
-  var today=todayISO(),week=mondayOf(today),end=addDays(week,6),allToday=activitiesOn(today),pending=S.tasks.filter(function(t){return !t.done;}),overdue=pending.filter(function(t){return t.date&&t.date<today;}).sort(sortActivities),undated=pending.filter(function(t){return !t.date;}),weekList=S.tasks.filter(function(t){return t.date>=week&&t.date<=end;}),weekFinished=weekList.filter(function(t){return t.done;}).length;
+  var today=todayISO(),week=mondayOf(today),end=addDays(week,6),allToday=activitiesOn(today),pending=S.tasks.filter(function(t){return !t.done;}),overdue=pending.filter(function(t){return (t.deadline&&t.deadline<today)||(t.date&&t.date<today);}).sort(sortActivities),undated=pending.filter(function(t){return !t.date;}),weekList=S.tasks.filter(function(t){return t.date>=week&&t.date<=end;}),weekFinished=weekList.filter(function(t){return t.done;}).length;
   var doneThisWeek=S.tasks.filter(function(t){if(!t.done||!t.doneAt)return false;var d=isoOf(new Date(t.doneAt));return d>=week&&d<=end;}).length;
   $('#homeDate').textContent=fromISO(today).toLocaleDateString(LOCALE,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
   function stat(n,label,filter){return '<button class="stat" data-home-filter="'+filter+'"><strong>'+n+'</strong><span>'+esc(spMessage(label))+'</span></button>';}
@@ -1414,7 +1422,7 @@ function itemHTML(t){
   return '<div class="item'+(t.done?' done':'')+'" data-id="'+t.id+'">'+
     '<button class="chk" data-act="done"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>'+
     '<div class="ic"><div class="it">'+(t.pri===URGENT?'<span class="urg">!</span>':'')+esc(t.title||tr('Без названия'))+'<span class="status-badge '+statusClass(t.status)+'">'+esc(statusName(t.status))+'</span></div>'+
-    '<div class="im">'+durStr(t.dur)+(t.folder&&S.folderSel==='all'?' · '+esc(folderName(t.folder)):'')+subtaskSummary(t)+(t.note?' · '+tr('есть заметка'):'')+'</div></div>'+
+    '<div class="im">'+durStr(t.dur)+(t.deadline?' · '+esc((!t.done&&t.deadline<todayISO()?spMessage('deadlinePassed'):spMessage('deadline'))+': '+fmtDayShort(t.deadline)):'')+(t.folder&&S.folderSel==='all'?' · '+esc(folderName(t.folder)):'')+subtaskSummary(t)+(t.note?' · '+tr('есть заметка'):'')+'</div></div>'+ 
     '<button class="go" data-act="plan" title="'+tr('Запланировать')+'"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button></div>';
 }
 
@@ -1451,7 +1459,7 @@ function renderArchive(){
   });
 }
 function archHTML(t){
-  var when=(t.date?fmtDay(t.date)+' · '+taskTimeLabel(t):spMessage('noDate'))+' · '+durationLabel(t)+(t.folder?' · '+folderName(t.folder):'')+(t.category?' · '+t.category:'');
+  var when=(t.date?fmtDay(t.date)+' · '+taskTimeLabel(t):spMessage('noDate'))+' · '+durationLabel(t)+(t.deadline?' · '+spMessage('deadline')+': '+fmtDayShort(t.deadline):'')+(t.folder?' · '+folderName(t.folder):'')+(t.category?' · '+t.category:'');
   return '<div class="item done" data-id="'+t.id+'">'+
     '<button class="chk" data-act="undone"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>'+
     '<div class="ic"><div class="it">'+esc(t.title||tr('Без названия'))+'</div>'+
@@ -2168,6 +2176,7 @@ function openEditor(task,pre){
   var E=task?{id:task.id,title:task.title,note:task.note,date:task.date,start:task.start,dur:task.dur,pri:task.pri,done:task.done,status:task.status||(task.done?'done':'review'),folder:task.folder,subtasks:(task.subtasks||[]).map(function(x){return {id:x.id||uid(),title:x.title||'',done:!!x.done};})}
             :{id:null,title:'',note:'',date:pre.date||null,start:(pre.start!=null?pre.start:null),
               dur:pre.dur||S.settings.dur,pri:1,done:false,status:'review',folder:pre.folder||null,subtasks:[]};
+  E.deadline=task&&validDate(task.deadline)?task.deadline:null;
   E.type=task&&task.type==='appointment'?'appointment':'task';E.category=task&&task.category||'';E.durationSet=task?task.durationSet!==false:pre.dur!=null;
   var unsched=!E.date,noTime=E.start==null;
   var srOld=(task&&task.seriesId)?seriesById(task.seriesId):null;
@@ -2185,6 +2194,7 @@ function openEditor(task,pre){
       '<div class="seg p4" id="ePri">'+[0,1,2,URGENT].map(function(p){return '<button data-p="'+p+'">'+PRI[p].n+'</button>';}).join('')+'</div>'+
       '<div class="hint">'+tr('Папка')+'</div><div class="chips" id="eFolder"></div>'+
       '<label class="hint" for="eCategory">'+spMessage('category')+'</label><input class="field-input" id="eCategory" maxlength="80" list="eCategories" placeholder="'+spMessage('categoryHint')+'"><datalist id="eCategories">'+Array.from(new Set(S.tasks.map(function(t){return t.category;}).filter(Boolean))).sort().map(function(c){return '<option value="'+esc(c)+'"></option>';}).join('')+'</datalist>'+
+      '<div class="card"><div class="row"><label class="lbl" for="eDeadline">'+spMessage('deadline')+'</label><input type="date" id="eDeadline"></div><div class="hint">'+spMessage('deadlineHint')+'</div></div>'+ 
       '<div class="card">'+
         '<div class="row"><label class="lbl" for="eUn">'+spMessage('noDate')+'</label>'+
           '<label class="sw"><input type="checkbox" id="eUn"><i></i></label></div>'+
@@ -2219,6 +2229,7 @@ function openEditor(task,pre){
   tEl.value=E.title;
   $('#eNote',sh).value=E.note||'';
   $('#eCategory',sh).value=E.category;
+  $('#eDeadline',sh).value=E.deadline||'';
   $('#eUn',sh).checked=unsched;
 
   function syncPri(){$$('#ePri button',sh).forEach(function(b){b.classList.toggle('on',+b.dataset.p===E.pri);});}
@@ -2265,6 +2276,7 @@ function openEditor(task,pre){
   function readFields(){
     E.title=tEl.value.trim(); E.note=$('#eNote',sh).value.trim(); E.done=E.status==='done';
     E.category=$('#eCategory',sh).value.trim();
+    E.deadline=$('#eDeadline',sh).value||null;
     if(!unsched)E.date=$('#eDate',sh).value;
     if(!unsched&&!noTime){var time=$('#eTime',sh).value.split(':');E.start=time.length===2?(+time[0])*60+(+time[1]):null;}
     addSubtask();
@@ -2272,6 +2284,7 @@ function openEditor(task,pre){
   }
   function validFields(){
     if(!E.title){toast(spMessage('noTitle'));tEl.focus();return false;}
+    if(E.deadline&&!validDate(E.deadline)){toast(spMessage('deadlineInvalid'));$('#eDeadline',sh).focus();return false;}
     if(!unsched&&!validDate(E.date)){toast(spMessage('dateRequired'));return false;}
     if(!unsched&&!noTime&&(E.start==null||E.start<0||E.start>=1440)){toast(spMessage('timeRequired'));return false;}
     if(!unsched&&!noTime&&E.durationSet&&E.start+E.dur>1440){toast(spMessage('endAfterDay'));return false;}
@@ -2286,6 +2299,7 @@ function openEditor(task,pre){
     snapshot();
     srOld.title=E.title; srOld.note=E.note; srOld.dur=E.dur; srOld.pri=E.pri; srOld.folder=E.folder||null;
     srOld.subtasks=normalizeSubtasks(E.subtasks,true);
+    srOld.deadlineOffset=E.deadline?dateOffset(E.date,E.deadline):null;
     srOld.type=E.type;srOld.category=E.category;srOld.durationSet=E.durationSet;
     srOld.start=noTime?null:E.start;
     if(E.rep){ srOld.kind=E.rep.kind; srOld.days=E.rep.days.slice();srOld.monthDay=E.rep.monthDay||fromISO(E.date).getDate(); }
@@ -2360,6 +2374,7 @@ function openEditor(task,pre){
     syncSched();
   });
   $('#eDate',sh).addEventListener('change',function(){ if(this.value){E.date=this.value;if(E.rep&&E.rep.kind==='month'&&!srOld)E.rep.monthDay=fromISO(E.date).getDate();renderConflict();} });
+  $('#eDeadline',sh).addEventListener('change',function(){E.deadline=this.value||null;});
   $('#eTime',sh).addEventListener('change',function(){
     var p=this.value.split(':'); if(p.length===2){E.start=(+p[0])*60+(+p[1]);syncSched();}
   });
@@ -2399,7 +2414,7 @@ function openEditor(task,pre){
     snapshot();
     var t=task;
     if(!t){t=normalize({id:uid()});S.tasks.push(t);}
-    t.title=E.title; t.note=E.note; t.dur=E.dur; t.pri=E.pri; t.folder=E.folder||null;
+    t.title=E.title; t.note=E.note; t.dur=E.dur; t.pri=E.pri; t.folder=E.folder||null; t.deadline=E.deadline||null;
     t.type=E.type;t.category=E.category;t.durationSet=E.durationSet;
     t.subtasks=E.subtasks.map(function(x){return {id:x.id||uid(),title:x.title,done:!!x.done};});
     if(E.status!==t.status) setStatus(t,E.status); else { t.status=E.status; t.done=E.status==='done'; }
@@ -2426,7 +2441,7 @@ function openEditor(task,pre){
         }
       }else if(E.rep){
         var sr=normalizeSeries({id:uid(),title:t.title,note:t.note,start:t.start,dur:t.dur,pri:t.pri,folder:t.folder,
-          type:t.type,category:t.category,durationSet:t.durationSet,monthDay:E.rep.monthDay,subtasks:t.subtasks,kind:E.rep.kind,days:E.rep.days,from:t.date});
+          type:t.type,category:t.category,durationSet:t.durationSet,deadlineOffset:E.deadline?dateOffset(t.date,E.deadline):null,monthDay:E.rep.monthDay,subtasks:t.subtasks,kind:E.rep.kind,days:E.rep.days,from:t.date});
         S.series.push(sr);
         S.tasks=S.tasks.filter(function(x){return x.id!==t.id;});
         var inst=instanceFor(sr,t.date); inst.done=t.done; inst.doneAt=t.doneAt; inst.status=t.status; inst.subtasks=normalizeSubtasks(t.subtasks);
