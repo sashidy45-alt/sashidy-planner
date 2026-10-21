@@ -205,6 +205,10 @@ body.kb .fmtpop{bottom:calc(var(--kb,0px) + 60px)}
   color:#fff;font-size:12px;font-weight:800;margin-right:6px;vertical-align:-2px}
 .seg.p4 button{padding:7px 2px;font-size:12.5px;letter-spacing:-.2px}
 .seg.p4 button[data-p="3"].on{color:var(--red)}
+.seg.p3 button{padding:7px 4px;font-size:13px}
+.status-badge{display:inline-block;padding:2px 7px;border-radius:8px;background:var(--accent-soft);color:var(--accent);font-size:11px;font-weight:600;margin-left:5px;vertical-align:1px}
+.status-badge.progress{background:rgba(255,149,0,.14);color:var(--orange)}
+.status-badge.done{background:rgba(23,160,94,.14);color:var(--green)}
 .block.done{opacity:.45}
 .block.done .bt{text-decoration:line-through}
 .block.dragging{z-index:20;box-shadow:var(--shadow);transform:scale(1.02);opacity:.95;background:var(--surface);transition:none}
@@ -331,6 +335,18 @@ body.note-open .tabbar{display:none}
 .f-title{width:100%;background:var(--field);border:0;border-radius:12px;padding:13px 14px;font-size:17px;font-weight:500;outline:none}
 .f-title::placeholder{color:var(--text-3)}
 textarea.f-note{width:100%;background:var(--field);border:0;border-radius:12px;padding:12px 14px;font-size:15px;outline:none;resize:none;min-height:66px}
+.subtasks{background:var(--field);border-radius:12px;overflow:hidden}
+.subtask-row{display:flex;align-items:center;gap:9px;padding:8px 11px;min-height:40px}
+.subtask-row+.subtask-row{border-top:.5px solid var(--sep)}
+.subtask-row input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent);flex:none}
+.subtask-row .subtask-title{flex:1;min-width:0;width:100%;font-size:14px;border:0;background:transparent;padding:5px 0}
+.subtask-row.done .subtask-title{text-decoration:line-through;color:var(--text-3)}
+.subtask-row .subtask-del{color:var(--text-3);font-size:18px;line-height:1;min-width:32px;min-height:32px}
+.subtask-section summary{cursor:pointer;font-size:14px;font-weight:600;padding:8px 4px}
+.subtask-section summary span{color:var(--text-2);font-size:12px;font-weight:400;margin-left:6px}
+.subtask-add{display:flex;gap:6px;margin-top:6px}
+.subtask-add input{flex:1;min-width:0;background:var(--field);border:0;border-radius:9px;padding:9px 11px;outline:none;font-size:14px}
+.subtask-add button{padding:0 12px;border-radius:9px;background:var(--accent);color:#fff;font-size:14px;font-weight:600}
 .card{background:var(--field);border-radius:12px;overflow:hidden}
 .row{display:flex;align-items:center;gap:10px;padding:11px 14px;min-height:46px}
 .row+.row,#eSched .row,#eSched+.row{border-top:.5px solid var(--sep)}
@@ -522,13 +538,13 @@ var WD=(function(){
 var SP_MESSAGES={
   es:{
     archive:'Las actividades realizadas se conservan hasta que las elimines.',
-    backup:'Incluye tareas, carpetas, notas, repeticiones y ajustes.',
+    backup:'Incluye tareas, estados, subtareas, carpetas, notas, repeticiones y ajustes.',
     restore:'¿Restaurar esta copia? Se reemplazarán las tareas y los demás datos incluidos. Los datos que la copia no contenga se conservarán.',
     storage:'No se pudo guardar la copia. Tus datos actuales se mantienen.'
   },
   en:{
     archive:'Completed tasks are kept until you delete them.',
-    backup:'Includes tasks, folders, notes, recurring schedules and settings.',
+    backup:'Includes tasks, statuses, subtasks, folders, notes, recurring schedules and settings.',
     restore:'Restore this backup? Tasks and other included data will be replaced. Data not included in the backup will be kept.',
     storage:'The backup could not be saved. Your current data is unchanged.'
   },
@@ -557,7 +573,16 @@ var SP_MESSAGES={
     storage:'बैकअप सहेजा नहीं जा सका। आपका मौजूदा डेटा नहीं बदला है।'
   }
 };
-function spMessage(key){return (SP_MESSAGES[LANG]||SP_MESSAGES.en)[key];}
+var SP_TASK_MESSAGES={
+  es:{status:'Estado',review:'Revisado',progress:'En curso',done:'Realizado',subtasks:'Subtareas',addSubtask:'Añadir subtarea',emptySubtasks:'Todavía no hay subtareas.',removeSubtask:'Eliminar subtarea',subtaskTitle:'Título de la subtarea',save:'Guardar'},
+  en:{status:'Status',review:'Reviewed',progress:'In progress',done:'Completed',subtasks:'Subtasks',addSubtask:'Add subtask',emptySubtasks:'No subtasks yet.',removeSubtask:'Delete subtask',subtaskTitle:'Subtask title',save:'Save'},
+  ru:{status:'Состояние',review:'Проверено',progress:'В работе',done:'Выполнено',subtasks:'Подзадачи',addSubtask:'Добавить подзадачу',emptySubtasks:'Нет подзадач.',removeSubtask:'Удалить подзадачу',subtaskTitle:'Название подзадачи',save:'Сохранить'},
+  de:{status:'Status',review:'Geprüft',progress:'In Arbeit',done:'Erledigt',subtasks:'Teilaufgaben',addSubtask:'Teilaufgabe hinzufügen',emptySubtasks:'Noch keine Teilaufgaben.',removeSubtask:'Teilaufgabe löschen',subtaskTitle:'Titel der Teilaufgabe',save:'Speichern'},
+  zh:{status:'状态',review:'已检查',progress:'进行中',done:'已完成',subtasks:'子任务',addSubtask:'添加子任务',emptySubtasks:'还没有子任务。',removeSubtask:'删除子任务',subtaskTitle:'子任务标题',save:'保存'},
+  hi:{status:'स्थिति',review:'समीक्षित',progress:'जारी',done:'पूरा हुआ',subtasks:'उपकार्य',addSubtask:'उपकार्य जोड़ें',emptySubtasks:'अभी कोई उपकार्य नहीं है।',removeSubtask:'उपकार्य हटाएँ',subtaskTitle:'उपकार्य का शीर्षक',save:'सहेजें'}
+};
+Object.keys(SP_TASK_MESSAGES).forEach(function(lang){Object.assign(SP_MESSAGES[lang],SP_TASK_MESSAGES[lang]);});
+function spMessage(key){return (SP_MESSAGES[LANG]||SP_MESSAGES.en)[key]||SP_MESSAGES.en[key];}
 
 var BUILD='__BUILD__'; if(BUILD.charAt(0)==='_') BUILD='dev';
 function isApp(){return !!(window.navigator.standalone||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches));}
@@ -627,21 +652,29 @@ function stampChanges(){
   if(JSON.stringify(S.settings)!==shadow.s) S.settingsUpd=now;
   buildShadow();
 }
+function normalizeSubtasks(list,reset){
+  return (Array.isArray(list)?list:[]).filter(function(x){return x&&typeof x.title==='string'&&x.title.trim();}).map(function(x){
+    return {id:typeof x.id==='string'&&x.id?x.id:uid(),title:x.title.trim(),done:reset?false:!!x.done};
+  });
+}
 function normalizeSeries(x){
   return {id:x.id||uid(),title:x.title||'',note:x.note||'',start:(typeof x.start==='number')?x.start:9*60,
     dur:x.dur||60,pri:(typeof x.pri==='number')?x.pri:1,folder:x.folder||null,
     kind:x.kind==='week'?'week':'daily',days:Array.isArray(x.days)?x.days.slice():[],
-    from:x.from||todayISO(),skip:x.skip||{},ruleUpd:x.ruleUpd||0,upd:x.upd||0};
+    from:x.from||todayISO(),skip:x.skip||{},subtasks:normalizeSubtasks(x.subtasks,true),ruleUpd:x.ruleUpd||0,upd:x.upd||0};
 }
 function seriesById(id){for(var i=0;i<S.series.length;i++)if(S.series[i].id===id)return S.series[i];return null;}
 function normalizeNote(x){return {id:x.id||uid(),title:x.title||'',body:x.body||'',upd:x.upd||0};}
 function noteById(id){for(var i=0;i<S.notes.length;i++)if(S.notes[i].id===id)return S.notes[i];return null;}
 function normalize(t){
+  var status=(t.status==='progress'||t.status==='done'||t.status==='review')?t.status:(t.done?'done':'review');
+  var subs=normalizeSubtasks(t.subtasks);
+  if(t.done) status='done';
   return {id:t.id||uid(),title:t.title||'',note:t.note||'',date:t.date||null,
     start:(typeof t.start==='number')?t.start:null,dur:t.dur||S.settings.dur||60,
-    pri:Math.max(0,Math.min(URGENT,(typeof t.pri==='number')?t.pri:1)),done:!!t.done,
-    doneAt:t.done?(t.doneAt||Date.now()):null,folder:t.folder||null,upd:t.upd||0,seriesId:t.seriesId||null,
-    ord:(typeof t.ord==='number')?t.ord:0};
+    pri:Math.max(0,Math.min(URGENT,(typeof t.pri==='number')?t.pri:1)),done:status==='done',status:status,
+    doneAt:status==='done'?(t.doneAt||Date.now()):null,folder:t.folder||null,upd:t.upd||0,seriesId:t.seriesId||null,
+    subtasks:subs,ord:(typeof t.ord==='number')?t.ord:0};
 }
 
 /* ---------- utils ---------- */
@@ -702,7 +735,16 @@ function folderName(id){var f=folderById(id);return f?f.name:'';}
 function inFolder(t,sel){return sel==='all'?true:(sel==='none'?!t.folder:t.folder===sel);}
 function backlogIn(sel){return backlogList().filter(function(t){return inFolder(t,sel);});}
 function archiveList(){return S.tasks.filter(function(t){return t.done;}).sort(function(a,b){return (b.doneAt||0)-(a.doneAt||0);});}
-function setDone(t,v){ t.done=!!v; t.doneAt=v?Date.now():null; }
+function statusName(s){
+  return spMessage(s==='progress'?'progress':(s==='done'?'done':'review'));
+}
+function statusClass(s){return s==='progress'?'progress':(s==='done'?'done':'review');}
+function setStatus(t,s){ s=(s==='progress'||s==='done')?s:'review'; t.status=s; t.done=s==='done'; t.doneAt=t.done?(t.doneAt||Date.now()):null; }
+function setDone(t,v){ setStatus(t,v?'done':'review'); }
+function subtaskSummary(t){
+  var a=Array.isArray(t.subtasks)?t.subtasks:[], done=a.filter(function(x){return x.done;}).length;
+  return a.length?' · '+done+'/'+a.length+' '+spMessage('subtasks'):'';
+}
 function byId(id){for(var i=0;i<S.tasks.length;i++)if(S.tasks[i].id===id)return S.tasks[i];return null;}
 function conflicts(date,start,dur,skip){
   return onDay(date).filter(function(t){return t.id!==skip && start < t.start+t.dur && t.start < start+dur;});
@@ -772,7 +814,7 @@ function repLabel(sr){
 }
 function instanceFor(sr,iso){
   return normalize({id:sr.id+'@'+iso,title:sr.title,note:sr.note,date:iso,start:sr.start,dur:sr.dur,
-    pri:sr.pri,folder:sr.folder,seriesId:sr.id});
+    pri:sr.pri,folder:sr.folder,subtasks:normalizeSubtasks(sr.subtasks,true),seriesId:sr.id});
 }
 /* создаёт недостающие экземпляры серий в окне [вчера … +35 дней] (или до указанной даты) */
 function ensureOccurrences(untilIso){
@@ -798,12 +840,17 @@ function ensureOccurrences(untilIso){
   return created;
 }
 /* правило или содержимое серии изменилось: будущие невыполненные экземпляры приводим в соответствие */
-function regenSeries(sr,fromIso){
+function regenSeries(sr,fromIso,updateSubtasks){
   sr.ruleUpd=Date.now();
   S.tasks=S.tasks.filter(function(t){
     if(t.seriesId!==sr.id||t.done||t.date<fromIso) return true;
     if(!seriesMatches(sr,t.date)||(sr.skip&&sr.skip[t.date])) return false;   // больше не по правилу — убрать
     t.title=sr.title; t.note=sr.note; t.start=sr.start; t.dur=sr.dur; t.pri=sr.pri; t.folder=sr.folder;
+    if(updateSubtasks){
+      var previous=Object.create(null);
+      (t.subtasks||[]).forEach(function(x){previous[x.id]=!!x.done;});
+      t.subtasks=normalizeSubtasks(sr.subtasks,true).map(function(x){x.done=!!previous[x.id];return x;});
+    }
     return true;
   });
   save(); ensureOccurrences();
@@ -916,7 +963,7 @@ function blockHTML(t,l){
   var short=h<44;
   return '<div class="block'+(short?' short':'')+(t.done?' done':'')+(t.pri===URGENT?' urgent':'')+'" data-id="'+t.id+'" '+
     'style="top:'+top+'px;height:'+h+'px;left:'+left+';width:'+width+';--bar:'+PRI[t.pri].c+'">'+
-    '<div class="bt">'+esc(t.title||tr('Без названия'))+'</div>'+
+    '<div class="bt">'+esc(t.title||tr('Без названия'))+'<span class="status-badge '+statusClass(t.status)+'">'+esc(statusName(t.status))+'</span></div>'+
     '<div class="bm">'+hhmm(t.start)+(short?'':' – '+hhmm(t.start+t.dur)+' · '+durStr(t.dur))+(t.seriesId?' ↻':'')+'</div>'+
     '<button class="bchk" data-act="done" aria-label="'+tr('Выполнено')+'"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>'+
     '<div class="rz"></div></div>';
@@ -947,8 +994,8 @@ function rowHTML(t,over){
   return '<div class="drow'+(t.done?' done':'')+(t.pri===URGENT?' urgent':'')+'" data-id="'+t.id+'" role="button" tabindex="0" style="--bar:'+PRI[t.pri].c+'">'+
     '<span class="tm"><b>'+hhmm(t.start)+'</b><span>'+hhmm(t.start+t.dur)+'</span></span>'+
     '<span class="bar"></span>'+
-    '<span class="dc"><span class="dt">'+esc(t.title||tr('Без названия'))+'</span>'+
-    '<span class="dm">'+durStr(t.dur)+(t.seriesId?' · ↻ '+tr('повтор'):'')+(t.folder?' · '+esc(folderName(t.folder)):'')+(over?' · <em>'+tr('пересечение')+'</em>':'')+(t.note?' · '+tr('есть заметка'):'')+'</span></span>'+
+    '<span class="dc"><span class="dt">'+esc(t.title||tr('Без названия'))+'<span class="status-badge '+statusClass(t.status)+'">'+esc(statusName(t.status))+'</span></span>'+
+    '<span class="dm">'+durStr(t.dur)+(t.seriesId?' · ↻ '+tr('повтор'):'')+(t.folder?' · '+esc(folderName(t.folder)):'')+subtaskSummary(t)+(over?' · <em>'+tr('пересечение')+'</em>':'')+(t.note?' · '+tr('есть заметка'):'')+'</span></span>'+
     '<button class="rchk" data-act="done" aria-label="'+tr('Выполнено')+'"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button></div>';
 }
 
@@ -1194,8 +1241,8 @@ function renderBacklog(){
 function itemHTML(t){
   return '<div class="item'+(t.done?' done':'')+'" data-id="'+t.id+'">'+
     '<button class="chk" data-act="done"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>'+
-    '<div class="ic"><div class="it">'+(t.pri===URGENT?'<span class="urg">!</span>':'')+esc(t.title||tr('Без названия'))+'</div>'+
-    '<div class="im">'+durStr(t.dur)+(t.folder&&S.folderSel==='all'?' · '+esc(folderName(t.folder)):'')+(t.note?' · '+tr('есть заметка'):'')+'</div></div>'+
+    '<div class="ic"><div class="it">'+(t.pri===URGENT?'<span class="urg">!</span>':'')+esc(t.title||tr('Без названия'))+'<span class="status-badge '+statusClass(t.status)+'">'+esc(statusName(t.status))+'</span></div>'+
+    '<div class="im">'+durStr(t.dur)+(t.folder&&S.folderSel==='all'?' · '+esc(folderName(t.folder)):'')+subtaskSummary(t)+(t.note?' · '+tr('есть заметка'):'')+'</div></div>'+
     '<button class="go" data-act="plan" title="'+tr('Запланировать')+'"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></button></div>';
 }
 
@@ -1946,9 +1993,9 @@ function closeSheet(){
 function openEditor(task,pre){
   pre=pre||{};
   var isNew=!task;
-  var E=task?{id:task.id,title:task.title,note:task.note,date:task.date,start:task.start,dur:task.dur,pri:task.pri,done:task.done,folder:task.folder}
+  var E=task?{id:task.id,title:task.title,note:task.note,date:task.date,start:task.start,dur:task.dur,pri:task.pri,done:task.done,status:task.status||(task.done?'done':'review'),folder:task.folder,subtasks:(task.subtasks||[]).map(function(x){return {id:x.id||uid(),title:x.title||'',done:!!x.done};})}
             :{id:null,title:'',note:'',date:pre.date||null,start:(pre.start!=null?pre.start:null),
-              dur:pre.dur||S.settings.dur,pri:1,done:false,folder:pre.folder||null};
+              dur:pre.dur||S.settings.dur,pri:1,done:false,status:'review',folder:pre.folder||null,subtasks:[]};
   var unsched=!(E.date&&E.start!=null);
   var srOld=(task&&task.seriesId)?seriesById(task.seriesId):null;
   E.rep=srOld?{kind:srOld.kind,days:(srOld.days||[]).slice()}:null;
@@ -1956,9 +2003,11 @@ function openEditor(task,pre){
 
   var sh=openSheet(
     '<div class="sh-h"><button class="tb" id="eCancel">'+tr('Отмена')+'</button><div class="t">'+(isNew?tr('Новое дело'):tr('Дело'))+'</div>'+
-    '<button class="tb r strong" id="eSave">'+tr('Готово')+'</button></div>'+
+    '<button class="tb r strong" id="eSave">'+spMessage('save')+'</button></div>'+
     '<div class="sh-b">'+
       '<input class="f-title" id="eTitle" placeholder="'+tr('Что нужно сделать?')+'" autocomplete="off">'+
+      '<div class="hint">'+spMessage('status')+'</div>'+
+      '<div class="seg p3" id="eStatus">'+['review','progress','done'].map(function(s){return '<button data-s="'+s+'" aria-pressed="false">'+statusName(s)+'</button>';}).join('')+'</div>'+
       '<div class="seg p4" id="ePri">'+[0,1,2,URGENT].map(function(p){return '<button data-p="'+p+'">'+PRI[p].n+'</button>';}).join('')+'</div>'+
       '<div class="hint">'+tr('Папка')+'</div><div class="chips" id="eFolder"></div>'+
       '<div class="card">'+
@@ -1971,7 +2020,6 @@ function openEditor(task,pre){
         '</div>'+
         '<div class="row"><span class="lbl">'+tr('Длительность')+'</span>'+
           '<div class="stp"><button id="eMinus">−</button><span class="v" id="eDurV"></span><button id="ePlus">+</button></div></div>'+
-        '<div class="row"><span class="lbl">'+tr('Выполнено')+'</span><label class="sw"><input type="checkbox" id="eDone"><i></i></label></div>'+
       '</div>'+
       '<div id="eDurChips" class="chips"></div>'+
       '<div id="eRepBox">'+
@@ -1982,6 +2030,9 @@ function openEditor(task,pre){
       '</div>'+
       '<div id="eWarn"></div>'+
       '<div id="eSlotsBox"></div>'+
+      '<details class="subtask-section" open><summary>'+spMessage('subtasks')+'<span id="eSubCount" aria-live="polite"></span></summary>'+
+      '<div class="subtasks" id="eSubtasks"></div>'+
+      '<div class="subtask-add"><input id="eSubNew" placeholder="'+spMessage('addSubtask')+'" aria-label="'+spMessage('addSubtask')+'" autocomplete="off"><button id="eSubAdd" aria-label="'+spMessage('addSubtask')+'">+</button></div></details>'+
       '<textarea class="f-note" id="eNote" placeholder="'+tr('Заметка')+'"></textarea>'+
       (isNew?'':'<button class="danger" id="eDel">'+(srOld?tr('Удалить только это'):tr('Удалить дело'))+'</button>')+
     '</div>');
@@ -1989,10 +2040,20 @@ function openEditor(task,pre){
   var tEl=$('#eTitle',sh);
   tEl.value=E.title;
   $('#eNote',sh).value=E.note||'';
-  $('#eDone',sh).checked=!!E.done;
   $('#eUn',sh).checked=unsched;
 
   function syncPri(){$$('#ePri button',sh).forEach(function(b){b.classList.toggle('on',+b.dataset.p===E.pri);});}
+  function syncStatus(){$$('#eStatus button',sh).forEach(function(b){var on=b.dataset.s===E.status;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));});}
+  function renderSubtasks(){
+    var box=$('#eSubtasks',sh);
+    $('#eSubCount',sh).textContent=E.subtasks.filter(function(x){return x.done;}).length+'/'+E.subtasks.length;
+    box.innerHTML=E.subtasks.length?E.subtasks.map(function(x,i){return '<div class="subtask-row'+(x.done?' done':'')+'" data-i="'+i+'"><input type="checkbox" aria-label="'+esc(spMessage('done')+': '+x.title)+'" '+(x.done?'checked':'')+'><input class="subtask-title" aria-label="'+spMessage('subtaskTitle')+'" value="'+esc(x.title)+'"><button class="subtask-del" aria-label="'+spMessage('removeSubtask')+'" title="'+spMessage('removeSubtask')+'">×</button></div>';}).join(''):
+      '<div class="hint" style="padding:11px 12px">'+spMessage('emptySubtasks')+'</div>';
+  }
+  function addSubtask(){
+    var inp=$('#eSubNew',sh), title=inp.value.trim(); if(!title)return;
+    E.subtasks.push({id:uid(),title:title,done:false}); inp.value=''; renderSubtasks();
+  }
   function syncFolder(){
     var h=$('#eFolder',sh);
     h.innerHTML='<button data-f="" class="'+(E.folder?'':'on')+'">'+tr('Без папки')+'</button>'+
@@ -2021,7 +2082,9 @@ function openEditor(task,pre){
     } else box.innerHTML='';
   }
   function readFields(){
-    E.title=tEl.value.trim(); E.note=$('#eNote',sh).value.trim(); E.done=$('#eDone',sh).checked;
+    E.title=tEl.value.trim(); E.note=$('#eNote',sh).value.trim(); E.done=E.status==='done';
+    addSubtask();
+    E.subtasks=normalizeSubtasks(E.subtasks);
   }
   function applyToAll(){
     readFields();
@@ -2029,9 +2092,13 @@ function openEditor(task,pre){
     if(E.rep&&E.rep.kind==='week'&&!E.rep.days.length){ toast(tr('Выберите дни недели')); return; }
     snapshot();
     srOld.title=E.title; srOld.note=E.note; srOld.dur=E.dur; srOld.pri=E.pri; srOld.folder=E.folder||null;
+    srOld.subtasks=normalizeSubtasks(E.subtasks,true);
     srOld.start=Math.max(dayMin(),Math.min(dayMax()-E.dur,E.start==null?dayMin():E.start));
     if(E.rep){ srOld.kind=E.rep.kind; srOld.days=E.rep.days.slice(); }
-    regenSeries(srOld,E.date||S.date);
+    regenSeries(srOld,E.date||S.date,true);
+    if(task&&byId(task.id)){
+      task.subtasks=normalizeSubtasks(E.subtasks); setStatus(task,E.status); save();
+    }
     closeSheet(); render(); toast(tr('Применено ко всем будущим'),true);
   }
   function syncSched(){
@@ -2067,6 +2134,24 @@ function openEditor(task,pre){
 
   $$('#ePri button',sh).forEach(function(b){
     b.addEventListener('click',function(){E.pri=+b.dataset.p;syncPri();});
+  });
+  $$('#eStatus button',sh).forEach(function(b){
+    b.addEventListener('click',function(){E.status=b.dataset.s;E.done=E.status==='done';syncStatus();});
+  });
+  $('#eSubAdd',sh).addEventListener('click',function(){
+    addSubtask(); $('#eSubNew',sh).focus();
+  });
+  $('#eSubNew',sh).addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();$('#eSubAdd',sh).click();}});
+  $('#eSubtasks',sh).addEventListener('change',function(e){
+    if(e.target.type!=='checkbox')return;
+    var row=e.target.closest('.subtask-row'); if(!row)return; var x=E.subtasks[+row.dataset.i]; if(x){x.done=e.target.checked;renderSubtasks();}
+  });
+  $('#eSubtasks',sh).addEventListener('input',function(e){
+    if(!e.target.classList.contains('subtask-title'))return;
+    var row=e.target.closest('.subtask-row'), x=row&&E.subtasks[+row.dataset.i]; if(x)x.title=e.target.value;
+  });
+  $('#eSubtasks',sh).addEventListener('click',function(e){
+    var b=e.target.closest('.subtask-del'); if(!b)return; var row=b.closest('.subtask-row'); if(row){E.subtasks.splice(+row.dataset.i,1);renderSubtasks();}
   });
   $('#eUn',sh).addEventListener('change',function(){
     unsched=this.checked;
@@ -2117,7 +2202,8 @@ function openEditor(task,pre){
     var t=task;
     if(!t){t=normalize({id:uid()});S.tasks.push(t);}
     t.title=E.title; t.note=E.note; t.dur=E.dur; t.pri=E.pri; t.folder=E.folder||null;
-    if(E.done!==t.done) setDone(t,E.done);
+    t.subtasks=E.subtasks.map(function(x){return {id:x.id||uid(),title:x.title,done:!!x.done};});
+    if(E.status!==t.status) setStatus(t,E.status); else { t.status=E.status; t.done=E.status==='done'; }
     if(unsched){
       t.date=null;t.start=null;
       if(srOld){ detachInstance({seriesId:srOld.id,date:oldDate}); t.seriesId=null; }   // ушло в список — из серии выпадает
@@ -2139,10 +2225,10 @@ function openEditor(task,pre){
         }
       }else if(E.rep){
         var sr=normalizeSeries({id:uid(),title:t.title,note:t.note,start:t.start,dur:t.dur,pri:t.pri,folder:t.folder,
-          kind:E.rep.kind,days:E.rep.days,from:t.date});
+          subtasks:t.subtasks,kind:E.rep.kind,days:E.rep.days,from:t.date});
         S.series.push(sr);
         S.tasks=S.tasks.filter(function(x){return x.id!==t.id;});
-        var inst=instanceFor(sr,t.date); inst.done=t.done; inst.doneAt=t.doneAt;
+        var inst=instanceFor(sr,t.date); inst.done=t.done; inst.doneAt=t.doneAt; inst.status=t.status; inst.subtasks=normalizeSubtasks(t.subtasks);
         S.tasks.push(inst); t=inst;
         save(); ensureOccurrences();
       }
@@ -2150,7 +2236,7 @@ function openEditor(task,pre){
     save(); closeSheet(); render();
   });
 
-  syncPri(); syncFolder(); syncSched();
+  syncPri(); syncStatus(); syncFolder(); syncSched(); renderSubtasks();
   if(isNew) setTimeout(function(){tEl.focus();},260);
 }
 
@@ -2184,6 +2270,13 @@ function prepareBackupRestore(txt){
         if(x[k]!=null&&(typeof x[k]!=='number'||!Number.isFinite(x[k]))) throw new Error('Invalid backup number');
       });
       if(x.done!=null&&typeof x.done!=='boolean') throw new Error('Invalid completion value');
+      if(x.status!=null&&['review','progress','done'].indexOf(x.status)<0) throw new Error('Invalid task status');
+      if(x.subtasks!=null){
+        if(!Array.isArray(x.subtasks)) throw new Error('Invalid subtasks');
+        x.subtasks.forEach(function(sub){
+          if(!object(sub)||typeof sub.id!=='string'||!sub.id||typeof sub.title!=='string'||!sub.title.trim()||typeof sub.done!=='boolean') throw new Error('Invalid subtask');
+        });
+      }
       if(x.days!=null&&(!Array.isArray(x.days)||x.days.some(function(day){return !Number.isInteger(day)||day<0||day>6;}))) throw new Error('Invalid repeat days');
       if(x.skip!=null&&!object(x.skip)) throw new Error('Invalid skipped dates');
     });
