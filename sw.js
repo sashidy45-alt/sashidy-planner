@@ -2,6 +2,7 @@
 const CACHE = 'planly-v1';
 const ASSETS = [
   './', './index.html', './manifest.json',
+  './assets/notifications.js', './assets/notifications.css',
   './icons/icon-192.png', './icons/icon-512.png', './icons/icon-180.png'
 ];
 
@@ -79,4 +80,35 @@ self.addEventListener('fetch', e => {
         })
       )
   );
+});
+
+
+// Native system notifications, including when no agenda tab is open.
+self.addEventListener('push', event => {
+  let data={};
+  try { data=event.data ? event.data.json() : {}; } catch (_) {}
+  const target=new URL(typeof data.url==='string'?data.url:'/',self.location.origin);
+  const url=target.origin===self.location.origin?target.href:self.location.origin+'/';
+  event.waitUntil(self.registration.showNotification(
+    typeof data.title==='string'?data.title.slice(0,120):'Sashidy Planner', {
+      body:typeof data.body==='string'?data.body.slice(0,300):'Tienes una actividad pendiente.',
+      icon:'/icons/icon-192.png',badge:'/icons/icon-192.png',
+      tag:typeof data.tag==='string'?data.tag:'sashidy-reminder',
+      data:{url},renotify:false
+    }));
+});
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  event.waitUntil((async()=>{
+    let url=new URL(event.notification.data?.url || '/',self.location.origin);
+    if(url.origin!==self.location.origin)url=new URL('/',self.location.origin);
+    const windows=await self.clients.matchAll({type:'window',includeUncontrolled:true});
+    for(const client of windows){
+      if(new URL(client.url).origin===self.location.origin){
+        const navigated=await client.navigate(url.href);
+        if(navigated)return navigated.focus();
+      }
+    }
+    return self.clients.openWindow(url.href);
+  })());
 });
