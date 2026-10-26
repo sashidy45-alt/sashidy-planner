@@ -64,6 +64,7 @@ echo "index.html generado: $(wc -c < index.html) bytes"
 VER=$(date +%Y%m%d%H%M%S)
 rm -rf dist && mkdir -p dist
 cp index.html manifest.json dist/
+cp -R assets dist/assets
 
 # Conserva la variante independiente fuera de la publicación.
 mkdir -p .build
@@ -74,3 +75,4 @@ sed "s/planly-v1/planly-$VER/" sw.js > dist/sw.js
 cp -R icons dist/icons
 
 echo "Publicación preparada: $BUILD_STAMP"
+

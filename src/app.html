@@ -1,4 +1,6 @@
 <title>Planly</title>
+<link rel="stylesheet" href="assets/notifications.css">
+<script src="assets/notifications.js"></script>
 <style>
 :root{
   color-scheme: light dark;
@@ -440,6 +442,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visi
     <button class="brand" data-nav="home">Sashidy Planner</button>
     <button class="utility" data-nav="notes" data-i18n="Заметки">Notas</button>
     <button class="utility" data-nav="arch" data-sp="history">Historial</button>
+    <button class="ib" id="bNotifications" aria-label="Notificaciones" title="Notificaciones" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button>
     <button class="ib" id="bSetGlobal" aria-label="Ajustes" data-i18n-aria="Настройки"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg></button>
   </header>
   <section class="view" id="v-home">
@@ -2645,7 +2648,7 @@ function openSettings(){
 }
 
 /* ---------- синхронизация ---------- */
-var SKEY='planly.sync', syncTimer=0;
+var SKEY='planly.sync', syncTimer=0, syncPromise=null, notificationUI=null;
 var sync={code:null,version:0,last:0,busy:false,state:'off',err:''};
 
 function loadSync(){
@@ -2728,9 +2731,9 @@ function docSig(d){
   });
 }
 function pushDoc(base,isRetry){
-  return fetch(apiURL()+'?code='+encodeURIComponent(sync.code),{
+  return fetch(apiURL(),{
     method:'PUT', cache:'no-store',
-    headers:{'content-type':'application/json'},
+    headers:{'content-type':'application/json',Authorization:'Bearer '+sync.code},
     body:JSON.stringify({base:base,doc:localDoc()})
   }).then(function(r){
     return r.json().catch(function(){return {};}).then(function(res){
@@ -2747,9 +2750,10 @@ function pushDoc(base,isRetry){
   });
 }
 function syncNow(manual){
-  if(!sync.code||sync.busy) return;
+  if(!sync.code) return Promise.resolve();
+  if(sync.busy) return syncPromise;
   sync.busy=true; sync.state='sync'; sync.err=''; refreshSyncUI();
-  fetch(apiURL()+'?code='+encodeURIComponent(sync.code),{cache:'no-store'})
+  syncPromise=fetch(apiURL(),{cache:'no-store',headers:{Authorization:'Bearer '+sync.code}})
     .then(function(r){
       if(r.status===403) throw new Error(tr('код не разрешён на сервере'));
       if(!r.ok) throw new Error('HTTP '+r.status);
@@ -2767,6 +2771,7 @@ function syncNow(manual){
       sync.busy=false; refreshSyncUI();
       if(manual) toast(sync.state==='ok'?tr('Синхронизировано'):tr('Не удалось:')+' '+sync.err);
     });
+  return syncPromise;
 }
 function scheduleSync(){
   if(!sync.code) return;
@@ -2777,7 +2782,8 @@ function syncOn(code){
   sync.code=code; sync.version=0; sync.last=0; sync.state='idle';
   saveSyncState(); syncNow(true);
 }
-function syncOff(){
+async function syncOff(){
+  if(notificationUI){try{await notificationUI.disconnect(sync.code);}catch(e){toast(e.message);return;}}
   sync.code=null; sync.version=0; sync.last=0; sync.state='off';
   try{ localStorage.removeItem(SKEY); }catch(e){}
   refreshSyncUI();
@@ -3070,10 +3076,15 @@ document.addEventListener('visibilitychange',function(){
   if(sync.code) syncNow(false);
   checkUpdate();
 });
+if(window.SashidyNotifications) notificationUI=window.SashidyNotifications.init({
+  getCode:function(){return sync.code;},sync:function(){return syncNow(false);},synced:function(){return sync.state==='ok';},openSheet:openSheet,closeSheet:closeSheet
+});
+(function(){var id=new URLSearchParams(location.search).get('task');var task=id&&byId(id);if(task)openEditor(task);})();
 setTimeout(checkUpdate,3000);
 setInterval(checkUpdate,1800000);
 window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').addEventListener&&
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme);
 })();
 </script>
+
 
