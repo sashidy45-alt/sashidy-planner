@@ -1,8 +1,13 @@
 .DS_Store
-dist/
-.build/
-node_modules/
 .wrangler/
 .claude/
 wrangler.toml
 tools/shots/raw/
+node_modules/
+dist/
+.build/
+.env
+.env.*
+!.env.example
+coverage/
+test-results/
